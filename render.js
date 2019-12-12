@@ -1,5 +1,4 @@
-//=========================================================================
-let TREE = new TreeOfLife(0, 0, 1024, 16);
+let TREE = new TreeOfLife(0, 0, 1024, 16);;
 
 const canvas = document.getElementById("quadtree");
 const ctx = canvas.getContext("2d");
@@ -7,9 +6,11 @@ const ctx = canvas.getContext("2d");
 const render = () => {
   ctx.clearRect(0, 0, 1024, 1024);
   const quads = TREE.currentBoard();
-  quads.forEach(({ x, y, size, isAlive }) => {
+
+  quads.forEach((quad) => {
+    const { x, y, size } = quad.area
     ctx.fillStyle = "#838fdc"
-    if (isAlive) {
+    if (quad.isAlive) {
       ctx.fillStyle = "#2c3b9a";
       ctx.fillRect(x, y, size, size);
     };
@@ -26,12 +27,11 @@ canvas.addEventListener("click", (e) => {
   const x = e.clientX - rect.left
   const y = e.clientY - rect.top
   TREE.insertCell(x, y);
-  cell = TREE.findLiveCell(x, y)
   render();
 });
 
 const randRender = () => {
-  TREE = new TreeOfLife(0, 0, 1024, 16);
+  // TREE = new TreeOfLife(0, 0, 1024, 16);
   const init = 256;
   const xCoords = randomArray(init, 1024 - 16);
   const yCoords = randomArray(init, 1024 - 16);
@@ -41,9 +41,17 @@ const randRender = () => {
   render();
 }
 
+const renderLife = () => {
+  TREE.updateNextGen()
+  TREE.makeNextGen()
+  render();
+}
+
 function randomArray(length, max) {
   return [...new Array(length)]
     .map(() => Math.round(Math.random() * max));
 }
-
-requestAnimationFrame(() => { setInterval(randRender, 100) });
+// render()
+randRender();
+requestAnimationFrame(() => { setInterval(renderLife, 100) });
+// renderLife()

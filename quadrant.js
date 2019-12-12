@@ -32,34 +32,33 @@ class Quad {
 
 
   getNeighbors() {
-    if (this.isAlive && this.area <= this.min) {
-      let [left, right, lower, upper] = [
-        this.x - this.min, // left x coord from current cell
-        this.x + this.min, // right x coord from current cell
-        this.y - this.min, // lower y coord from current cell
-        this.y + this.min, // upper y coord from current cell
-      ]
 
-      // This makes the board a finite field where "leaving" to the left
-      // brings it back to the right and vice versa as well as...
-      if (left < 0) { left = this.max - this.min }
-      else if (right >= this.max) { right = 0 }
+    let [left, right, lower, upper] = [
+      this.area.x - this.min, // left x coord from current cell
+      this.area.x + this.min, // right x coord from current cell
+      this.area.y + this.min, // lower y coord from current cell
+      this.area.y - this.min, // upper y coord from current cell
+    ]
 
-      // Leaving from the top brings you back to the bottom and vice versa
-      if (lower < 0) { lower = this.max - this.min }
-      else if (upper >= this.max) { upper = 0 }
+    // This makes the board a finite field where "leaving" to the left
+    // brings it back to the right and vice versa as well as...
+    if (left < 0) { left = this.max - this.min }
+    else if (right >= this.max) { right = 0 }
 
-      return [
-        `${this.x},${this.y + this.min}`, // upper
-        `${this.x},${this.y - this.min}`, // lower
-        `${this.x + this.min},${this.y}`, // right
-        `${this.x - this.min},${this.y}`, // left
-        `${this.x + this.min},${this.y + this.min}`, // upper right
-        `${this.x + this.min},${this.y - this.min}`, // lower right
-        `${this.x - this.min},${this.y + this.min}`, // upper left
-        `${this.x - this.min},${this.y - this.min}`, // lower left
-      ]
-    };
+    // Leaving from the top brings you back to the bottom and vice versa
+    if (lower < 0) { lower = this.max - this.min }
+    else if (upper >= this.max) { upper = 0 }
+
+    return [
+      `${this.area.x},${upper}`, // upper
+      `${this.area.x},${lower}`, // lower
+      `${right},${this.area.y}`, // right
+      `${left},${this.area.y}`, // left
+      `${right},${upper}`, // upper right
+      `${right},${lower}`, // lower right
+      `${left},${upper}`, // upper left
+      `${left},${lower}`, // lower left
+    ]
   };
 
 
@@ -95,7 +94,7 @@ class Quad {
     if (this.quadrants === null) {
       throw new Error("This is NOT divided!")
     };
-    for (let quad of this.quadrants) {
+    for (const quad of this.quadrants) {
       if (quad.area.contains(x, y)) {
         return quad
       }
