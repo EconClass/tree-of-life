@@ -39,13 +39,14 @@ class TreeOfLife {
       const [xPos, yPos] = key.split(',')
       const cell = this.findLiveCell(Number(xPos), Number(yPos))
 
-      if (cell != null) {
+      if (cell != null) { // If the cell is alive...
+        // ...check if it survives
         if (this.nextGen.get(key) === 2 || this.nextGen.get(key) === 3) {
           nextLife.push(key)
         }
       }
 
-      // Check if allowed to reincarnate
+      // Check if allowed to reincarnate (as if by reproduction)
       if (this.nextGen.get(key) === 3) {
         nextLife.push(key)
       }
@@ -70,6 +71,8 @@ class TreeOfLife {
   findLiveCell(x, y) {
     // `Number >> 4` effectively does an integer division by 16
     // and `Number << 4` multiplies by 16 this notation is used to avoid floats
+    // x = Math.floor((x / this.root.min) * this.root.min)
+    // y = Math.floor((y / this.root.min) * this.root.min)
     x = (x >> 4) << 4;
     y = (y >> 4) << 4;
     return this.__findCell__(x, y, this.root);

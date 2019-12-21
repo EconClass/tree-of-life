@@ -64,8 +64,10 @@ class Quad {
 
   // Create Live Cell at x, y position
   insert(x, y) {
-    // `Number >> 4` effectively does an integer division by 16
-    // and `Number << 4` multiplies by 16 this notation is used to avoid floats
+    // `Number >> 4` effectively does an integer division by 16 and
+    // `Number << 4` multiplies by 16 this notation is used to avoid floats
+    // x = Math.floor((x / this.min) * this.min)
+    // y = Math.floor((y / this.min) * this.min)
     x = (x >> 4) << 4;
     y = (y >> 4) << 4;
     this.__insert__(x, y);

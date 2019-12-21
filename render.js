@@ -1,4 +1,4 @@
-let TREE = new TreeOfLife(0, 0, 1024, 16);;
+let TREE = new TreeOfLife(0, 0, 1024, 16);
 
 const canvas = document.getElementById("quadtree");
 const ctx = canvas.getContext("2d");
@@ -30,7 +30,7 @@ canvas.addEventListener("click", (e) => {
   render();
 });
 
-const randRender = () => {
+const randomize = () => {
   // TREE = new TreeOfLife(0, 0, 1024, 16);
   const init = 256;
   const xCoords = randomArray(init, 1024 - 16);
@@ -52,6 +52,7 @@ function randomArray(length, max) {
     .map(() => Math.round(Math.random() * max));
 }
 // render()
-randRender();
+// window.onload(randRender());
+randomize();
 requestAnimationFrame(() => { setInterval(renderLife, 100) });
 // renderLife()
