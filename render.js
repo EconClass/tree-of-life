@@ -55,5 +55,5 @@ function randomArray(length, max) {
 // render()
 // window.onload(randRender());
 randomize();
-requestAnimationFrame(() => { setInterval(renderLife, 100); });
+requestAnimationFrame(() => { setInterval(renderLife, 350); });
 // renderLife()

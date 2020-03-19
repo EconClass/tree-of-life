@@ -44,8 +44,8 @@ class Quad {
     else if (right >= this.max) { right = 0; }
 
     // Also leaving from the top brings you back to the bottom and vice versa
-    if (lower < 0) { lower = this.max - this.min; }
-    else if (upper >= this.max) { upper = 0; }
+    if (upper < 0) { upper = this.max - this.min; }
+    else if (lower >= this.max) { lower = 0; }
 
     return [
       `${this.area.x},${upper}`, // upper

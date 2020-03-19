@@ -28,13 +28,6 @@ class TreeOfLife {
 
 
   makeNextGen() {
-    /**
-     * RULES OF THE GAME:
-     *  1) Any live cell with two or three neighbors survives.
-     *  2) Any dead cell with EXACTLY three live neighbors becomes a live cell.
-     *  3) All other live cells die in the next generation. Similarly, all other dead cells stay dead.
-     */
-
     // Grab all the living cells
     const nextLife = [];
 
@@ -56,9 +49,6 @@ class TreeOfLife {
       }
     }
 
-    // const { min, max } = this.root;
-    // const { x, y, size } = this.root.area;
-
     // Burn the Tree
     this.root.quadrants = null;
     this.root.isDivided = false;
@@ -67,19 +57,7 @@ class TreeOfLife {
     // Build the Tree
     for (const coord of nextLife) {
       const [xPos, yPos] = coord.split(',');
-      const x = Number(xPos);
-      const y = Number(yPos);
-
-      // Validate that the points are within bounds
-      if (
-        x < 0 || x >= this.root.area.size ||
-        y < 0 || y >= this.root.area.size
-      ) {
-        continue;
-      }
-      else {
-        this.root.insert(x, y);
-      }
+      this.root.insert(Number(xPos), Number(yPos));
     }
   }
 
@@ -88,10 +66,9 @@ class TreeOfLife {
   findLiveCell(x, y) {
     // `Number >> 4` effectively does an integer division by 16
     // and `Number << 4` multiplies by 16 this notation is used to avoid floats
-    // x = Math.floor((x / this.root.min) * this.root.min)
-    // y = Math.floor((y / this.root.min) * this.root.min)
-    x = (x >> 4) << 4;
-    y = (y >> 4) << 4;
+    x = (x >> 4) << 4; // x = Math.floor((x / this.root.min) * this.root.min)
+    y = (y >> 4) << 4; // y = Math.floor((y / this.root.min) * this.root.min)
+
     return this.__findCell__(x, y, this.root);
   };
 
