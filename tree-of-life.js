@@ -6,63 +6,80 @@ class TreeOfLife {
 
   // Insert a Quad that represents a Cell in the Game of Life 
   insertCell(x, y) {
-    this.root.insert(x, y)
+    this.root.insert(x, y);
   }
 
 
   updateNextGen() {
-    // O(nlogn + n) -> O(n)
-    const living = this.currentBoard().filter((tile) => tile.isAlive)
+    // O(2n) -> O(n)
+    const living = this.currentBoard().filter((tile) => tile.isAlive);
     for (let live of living) {
-      live.getNeighbors().forEach((cord) => {
-        if (this.nextGen.has(cord)) {
-          let val = this.nextGen.get(cord)
-          val++
-          this.nextGen.set(cord, val)
+      live.getNeighbors().forEach((coord) => {
+        if (this.nextGen.has(coord)) {
+          let val = this.nextGen.get(coord);
+          val++;
+          this.nextGen.set(coord, val);
         } else {
-          this.nextGen.set(cord, 1)
+          this.nextGen.set(coord, 1);
         }
-      })
+      });
     }
   };
 
 
   makeNextGen() {
-    // Any live cell with two or three neighbors survives.
-    // Any dead cell with EXACTLY three live neighbors becomes a live cell.
-    // All other live cells die in the next generation. Similarly, all other dead cells stay dead
+    /**
+     * RULES OF THE GAME:
+     *  1) Any live cell with two or three neighbors survives.
+     *  2) Any dead cell with EXACTLY three live neighbors becomes a live cell.
+     *  3) All other live cells die in the next generation. Similarly, all other dead cells stay dead.
+     */
 
     // Grab all the living cells
     const nextLife = [];
+
     for (const key of this.nextGen.keys()) {
-      // Check to see if it stays alive
-      const [xPos, yPos] = key.split(',')
-      const cell = this.findLiveCell(Number(xPos), Number(yPos))
+      // Check to see which cells live
+      const [xPos, yPos] = key.split(',');
+      const cell = this.findLiveCell(Number(xPos), Number(yPos));
 
       if (cell != null) { // If the cell is alive...
         // ...check if it survives
         if (this.nextGen.get(key) === 2 || this.nextGen.get(key) === 3) {
-          nextLife.push(key)
+          nextLife.push(key);
         }
       }
 
       // Check if allowed to reincarnate (as if by reproduction)
       if (this.nextGen.get(key) === 3) {
-        nextLife.push(key)
+        nextLife.push(key);
       }
     }
 
-    const { min, max } = this.root;
-    const { x, y, size } = this.root.area;
+    // const { min, max } = this.root;
+    // const { x, y, size } = this.root.area;
 
     // Burn the Tree
-    this.root = new Quad(x, y, size, min, max);
+    this.root.quadrants = null;
+    this.root.isDivided = false;
     this.nextGen = new Map();
 
     // Build the Tree
     for (const coord of nextLife) {
-      const [xPos, yPos] = coord.split(',')
-      this.root.insert(Number(xPos), Number(yPos))
+      const [xPos, yPos] = coord.split(',');
+      const x = Number(xPos);
+      const y = Number(yPos);
+
+      // Validate that the points are within bounds
+      if (
+        x < 0 || x >= this.root.area.size ||
+        y < 0 || y >= this.root.area.size
+      ) {
+        continue;
+      }
+      else {
+        this.root.insert(x, y);
+      }
     }
   }
 
@@ -81,20 +98,20 @@ class TreeOfLife {
   __findCell__(x, y, node) {
 
     if (!node) {
-      return null
+      return null;
     }
 
     if (node.isDivided) {
-      return this.__findCell__(x, y, node.whichQuad(x, y))
+      return this.__findCell__(x, y, node.whichQuad(x, y));
     }
 
     if (node.area.size > this.root.min) {
       return null;
     } else if (!node.isAlive) {
-      return null
+      return null;
     }
 
-    return node
+    return node;
   };
 
 
@@ -106,7 +123,7 @@ class TreeOfLife {
   };
 
 
-  // Rcursive helper function to traverse the tree
+  // Recursive helper function to traverse the tree
   __traverse__(quad, currentGen) {
     if (!quad.isDivided) {
       currentGen.push(quad);
