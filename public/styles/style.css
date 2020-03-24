@@ -1,7 +1,9 @@
 body { 
   background-color: #d3d7f2;
+  display: flex;
+  justify-content: center;
 }
 
 .container {
-  margin: 5% 20% 10% 5%;
+  margin-top: 5%;
 }
