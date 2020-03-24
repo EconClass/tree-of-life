@@ -21,13 +21,14 @@ class Boundary {
 
 //==============================================================================================
 class Quad {
-  constructor(x, y, size, min, max) {
+  constructor(x, y, size, min, max, p) {
     this.max = max;
     this.min = min;
     this.quadrants = null;
     this.area = new Boundary(x, y, size);
     this.isAlive = false;
     this.isDivided = false;
+    this.parent = p || null;
   };
 
   getNeighbors() {
@@ -67,13 +68,14 @@ class Quad {
     x = (x >> 4) << 4; // x = Math.floor((x / this.min) * this.min)
     y = (y >> 4) << 4; // y = Math.floor((y / this.min) * this.min)
 
-    this.__insert__(x, y);
+    this._insert(x, y);
   };
 
-  __insert__(x, y) {
+  _insert(x, y) {
     // Insert cell ONLY at the LOWEST possible quadrant
     if (this.area.size <= this.min && this.area.contains(x, y)) {
       this.isAlive = true;
+      return;
     };
 
     // Create subdivisions if possible and try the insert again
@@ -81,9 +83,10 @@ class Quad {
       if (!this.isDivided) {
         this.subdivide();
       };
+
       // Recursively find the proper quadrant to insert cell to
       const quad = this.whichQuad(x, y);
-      quad.__insert__(x, y);
+      quad._insert(x, y);
     };
   };
 
@@ -93,6 +96,7 @@ class Quad {
     if (!this.quadrants) {
       throw new Error("This is NOT divided!");
     };
+
     for (const quad of this.quadrants) {
       if (quad.area.contains(x, y)) {
         return quad;
@@ -113,10 +117,10 @@ class Quad {
     const offset = size >> 1;
     this.isDivided = true;
     this.quadrants = [
-      new Quad(x + offset, y, size >> 1, this.min, this.max), // NE
-      new Quad(x, y, size >> 1, this.min, this.max), // NW
-      new Quad(x, y + offset, size >> 1, this.min, this.max), // SW
-      new Quad(x + offset, y + offset, size >> 1, this.min, this.max), // SE
+      new Quad(x + offset, y, size >> 1, this.min, this.max, this), // NE
+      new Quad(x, y, size >> 1, this.min, this.max, this), // NW
+      new Quad(x, y + offset, size >> 1, this.min, this.max, this), // SW
+      new Quad(x + offset, y + offset, size >> 1, this.min, this.max, this), // SE
     ];
   };
 };
