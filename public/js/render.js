@@ -84,6 +84,7 @@ function randomArray(length, max) {
     .map(() => Math.round(Math.random() * max));
 }
 
+// ======================Initializer======================
 const interface = new UI();
 
 window.onload = function () {
